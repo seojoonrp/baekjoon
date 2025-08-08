@@ -1,0 +1,17 @@
+{
+  "files.associations": {
+    "ostream": "cpp",
+    "vector": "cpp",
+    "xutility": "cpp",
+    "xstring": "cpp",
+    "utility": "cpp",
+    "xiosbase": "cpp",
+    "exception": "cpp",
+    "memory": "cpp",
+    "tuple": "cpp",
+    "queue": "cpp",
+    "iostream": "cpp",
+    "xlocale": "cpp",
+    "deque": "cpp"
+  }
+}
