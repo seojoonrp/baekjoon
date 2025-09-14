@@ -28,11 +28,6 @@ int main() {
 
   ll ans = 0;
   for (int i = 1; i <= n; ++i) {
-    // for (int j = 0; j <= 100; ++j) {
-    //   if (dp[i][j] != 0) {
-    //     cout << i << ' ' << j << ' ' << dp[i][j] << '\n';
-    //   }
-    // }
     ans += dp[i][100];
   }
   cout << ans << '\n';
