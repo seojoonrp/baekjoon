@@ -7,12 +7,12 @@ import (
 )
 
 var (
-	n, m int
-	graph [][]int
-	emptySpaces [][2] int
-	ans int
-	dx = []int{ 0, 0, 1, -1 }
-	dy = []int{ 1, -1, 0, 0 }
+	n, m        int
+	graph       [][]int
+	emptySpaces [][2]int
+	ans         int
+	dx          = []int{0, 0, 1, -1}
+	dy          = []int{1, -1, 0, 0}
 )
 
 func main() {
@@ -26,11 +26,11 @@ func main() {
 
 	for i := 0; i < n; i++ {
 		graph[i] = make([]int, m)
-		
+
 		for j := 0; j < m; j++ {
 			fmt.Fscan(reader, &graph[i][j])
 			if graph[i][j] == 0 {
-				emptySpaces = append(emptySpaces, [2]int{ i, j })
+				emptySpaces = append(emptySpaces, [2]int{i, j})
 			}
 		}
 	}
@@ -50,7 +50,7 @@ func buildWall(count, start int) {
 		x, y := emptySpaces[i][0], emptySpaces[i][1]
 
 		graph[x][y] = 1
-		buildWall(count + 1, i + 1)
+		buildWall(count+1, i+1)
 		graph[x][y] = 0
 	}
 }
@@ -65,8 +65,8 @@ func calculateAns() {
 		for j := 0; j < m; j++ {
 			tempGraph[i][j] = graph[i][j]
 
-			if (tempGraph[i][j] == 2) {
-				virusQueue = append(virusQueue, [2]int{ i, j })
+			if tempGraph[i][j] == 2 {
+				virusQueue = append(virusQueue, [2]int{i, j})
 			}
 		}
 	}
@@ -79,11 +79,11 @@ func calculateAns() {
 		x, y := cur[0], cur[1]
 
 		for i := 0; i < 4; i++ {
-			nx, ny := x + dx[i], y + dy[i]
+			nx, ny := x+dx[i], y+dy[i]
 
 			if isSafe(nx, ny) && tempGraph[nx][ny] == 0 {
 				tempGraph[nx][ny] = 2
-				virusQueue = append(virusQueue, [2]int{ nx, ny })
+				virusQueue = append(virusQueue, [2]int{nx, ny})
 			}
 		}
 	}
@@ -92,7 +92,7 @@ func calculateAns() {
 	for i := 0; i < n; i++ {
 		for j := 0; j < m; j++ {
 			if tempGraph[i][j] == 0 {
-				curAns++;
+				curAns++
 			}
 		}
 	}
