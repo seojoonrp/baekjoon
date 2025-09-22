@@ -11,7 +11,7 @@ struct Node {
 int n, m;
 vector<Node> graph[101];
 int indegree[101];
-int ans[101][101];
+int needed_parts[101][101];
 
 void topology_sort() {
   queue<int> q;
@@ -19,7 +19,7 @@ void topology_sort() {
   for (int i = 1; i <= n; i++) {
     if (indegree[i] == 0) {
       q.push(i);
-      ans[i][i] = 1;
+      needed_parts[i][i] = 1;
     }
   }
 
@@ -34,7 +34,7 @@ void topology_sort() {
       }
 
       for (int i = 1; i <= n; i++) {
-        if (ans[cur][i]) ans[next.index][i] += ans[cur][i] * next.count;
+        if (needed_parts[cur][i]) needed_parts[next.index][i] += needed_parts[cur][i] * next.count;
       }
     }
   }
@@ -53,6 +53,6 @@ int main() {
   topology_sort();
 
   for (int i = 1; i <= n; i++) {
-    if (ans[n][i]) printf("%d %d\n", i, ans[n][i]);
+    if (needed_parts[n][i]) printf("%d %d\n", i, needed_parts[n][i]);
   }
 }
