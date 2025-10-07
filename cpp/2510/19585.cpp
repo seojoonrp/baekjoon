@@ -5,70 +5,65 @@
 using namespace std;
 
 const int ALPHABET = 26;
-const int MAX_NODES = 5e6;
 
 struct TrieNode {
   bool is_terminal;
-  TrieNode* children[ALPHABET];
+  vector<pair<char, TrieNode*>> children;
 
-  void clear() {
-    is_terminal = false;
-    fill(children, children + ALPHABET, nullptr);
+  TrieNode(): is_terminal(false) {
+    children.clear();
   }
 };
-
-vector<TrieNode> node_pool;
-int node_idx;
-
-TrieNode* newNode() {
-  node_pool[node_idx].clear();
-  return &node_pool[node_idx++];
-}
 
 struct Trie {
   TrieNode* root;
 
   Trie() {
-    root = newNode();
+    root = new TrieNode();
   }
 
   void insert(string word) {
     TrieNode* cur = root;
 
     for (char c : word) {
-      int index = c - 'a';
-      if (cur->children[index] == nullptr) cur->children[index] = newNode();
-      cur = cur->children[index];
+      bool flag = false;
+
+      for (auto& child : cur->children) {
+        if (child.first == c) {
+          flag = true;
+          cur = child.second;
+          break;
+        }
+      }
+
+      if (!flag) {
+        TrieNode* new_node = new TrieNode();
+        cur->children.push_back({ c, new_node });
+        cur = new_node;
+      }
     }
 
     cur->is_terminal = true;
   }
 
-  vector<int> terminal_idx(string word) {
+  void terminal_idx(string& word, bool*& arr) {
     TrieNode* cur = root;
-    vector<int> ret;
 
     for (int i = 0; i < word.length(); i++) {
-      int index = word[i] - 'a';
-      if (cur->children[index] == nullptr) break;
-      cur = cur->children[index];
+      bool flag = false;
 
-      if (cur->is_terminal) ret.push_back(i);
+      for (auto& child : cur->children) {
+        if (child.first == word[i]) {
+          flag = true;
+          cur = child.second;
+          break;
+        }
+      }
+
+      if (!flag) break;
+
+      if (cur->is_terminal) arr[i] = true;
     }
-
-    return ret;
-  }
-
-  bool legend(string word, int start) {
-    TrieNode* cur = root;
-
-    for (int i = start; i < word.length(); i++) {
-      int index = word[i] - 'a';
-      if (cur->children[index] == nullptr) return false;
-      cur = cur->children[index];
-    }
-
-    return cur->is_terminal;
   }
 };
 
@@ -78,38 +73,50 @@ int main() {
 
   int c, n;
   cin >> c >> n;
-  
-  node_pool.resize(MAX_NODES);
 
-  node_idx = 0;
-  Trie color_trie, nickname_trie;
+  Trie* color_trie = new Trie();
+  Trie* nickname_trie = new Trie();
 
   for (int i = 0; i < c; i++) {
     string s;
     cin >> s;
-    color_trie.insert(s);
+    color_trie->insert(s);
   }
   for (int i = 0; i < n; i++) {
     string s;
     cin >> s;
-    nickname_trie.insert(s);
+    reverse(s.begin(), s.end());
+    nickname_trie->insert(s);
   }
 
   int q;
   cin >> q;
   for (int i = 0; i < q; i++) {
-    bool ans = false;
     string s;
     cin >> s;
+    string s_rev = s;
+    reverse(s_rev.begin(), s_rev.end());
 
-    vector<int> term = color_trie.terminal_idx(s);
-    for (int idx : term) {
-      if (idx != s.length() - 1 && nickname_trie.legend(s, idx + 1)) {
-        ans = true;
+    int l = s.length();
+    bool* color_arr = new bool[l];
+    bool* nickname_arr = new bool[l];
+    fill(color_arr, color_arr + l, false);
+    fill(nickname_arr, nickname_arr + l, false);
+
+    color_trie->terminal_idx(s, color_arr);
+    nickname_trie->terminal_idx(s_rev, nickname_arr);
+
+    bool found = false;
+    for (int i = 0; i < l - 1; i++) {
+      if (color_arr[i] && nickname_arr[l - 2 - i]) {
+        found = true;
+        cout << "Yes" << '\n';
         break;
       }
     }
+    if (!found) cout << "No" << '\n';
 
-    cout << (ans ? "Yes" : "No") << '\n';
+    delete[] color_arr;
+    delete[] nickname_arr;
   }
 }
