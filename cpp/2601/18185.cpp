@@ -19,9 +19,24 @@ int main() {
   for (int i = 1; i <= n; i++) cin >> arr[i];
 
   int ans = 0;
-  for (int i = 1; i <= n - 2; i++) {
-    int two_sel = arr[i + 1] - arr[i + 2];
 
-    
+  for (int i = 1; i <= n; i++) {
+    if (arr[i + 1] > arr[i + 2]) {
+      int two_sel = min(arr[i], arr[i + 1] - arr[i + 2]);
+      arr[i] -= two_sel;
+      arr[i + 1] -= two_sel;
+      ans += two_sel * 5;
+    }
+
+    int three_sel = min({ arr[i], arr[i + 1], arr[i + 2] });
+    arr[i] -= three_sel;
+    arr[i + 1] -= three_sel;
+    arr[i + 2] -= three_sel;
+    ans += three_sel * 7;
+
+    ans += arr[i] * 3;
+    arr[i] = 0;
   }
+
+  cout << ans << '\n';
 }
